@@ -15,9 +15,9 @@ class ShopifyScraper():
         self.url = url
 
     def downloadjson(self, page):
-        r = requests.get(self.url + f"products.json?limit=250&page={page}")
-        if r.status_code != 200:
-            print ("Bad Status Code: ", r.status_code)
+        r = requests.get(self.url + f"products.json?limit=250")
+        # if r.status_code != 200:
+        #     print ("Bad Status Code: ", r.status_code)
         if len((r.json())['products']) > 0:
             data = r.json()['products']
             return data 
@@ -41,7 +41,7 @@ class ShopifyScraper():
                     "available": v['available']
                 }
 
-            print(item)
+                print(item)
 
             return
         
@@ -51,9 +51,9 @@ class ShopifyScraper():
         
         
     
-Kith = ShopifyScraper('https://kith.com/')
-data = Kith.downloadjson(3)
-Kith.parsejson(data)
+SAGO = ShopifyScraper('https://sagostudio.co/')
+data = SAGO.downloadjson(3)
+SAGO.parsejson(data)
      
 
 
