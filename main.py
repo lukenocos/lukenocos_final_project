@@ -1,71 +1,109 @@
 # file created by Luke Nocos
 
+'''
+GOALS:
+
+to scrape all the data from a shopify website and generate link
+to purchase a desired item through keywords.
+
+'''
+
 # sources: 
 # https://www.youtube.com/watch?v=p3Z-qtUp4p8&ab_channel=JohnWatsonRooney
+# https://www.youtube.com/watch?v=-31Or1HSmyo&ab_channel=straight_code
+# https://www.youtube.com/watch?v=bLCx348H0Kw&ab_channel=YasCode
 
 
-import requests 
+
+import requests
+import time
+import json
+import urllib3
 import webbrowser
+import codecs
+import random
+from settings import *
+
+session = requests.session()
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+product = None
+
+def get_products(session):
+    '''
+    Gets all the products from a Shopify site.
+    '''
+    # Download the products
+    link = base_url + "/products.json"
+    r = session.get(link, verify=False)
+
+    # Load the product data
+    products_json = json.loads(r.text)
+    products = products_json["products"]
+
+    # Return the products
+    return products
 
 
+def keyword_search(session, products, keywords):
+    '''
+    Searches through given products from a Shopify site to find the a product
+    containing all the defined keywords.
+    '''
+    # Go through each product
+    for product in products:
+        # Set a counter to check if all the keywords are found
+        keys = 0
+        # Go through each keyword
+        for keyword in keywords:
+            # If the keyword exists in the title
+            if(keyword.upper() in product["title"].upper()):
+                # Increment the counter
+                keys += 1
+            # If all the keywords were found
+            if(keys == len(keywords)):
+                # Return the product
+                return product
 
 
-class ShopifyScraper():
-    def __init__(self, url):
-        self.url = url
+def find_size(session, product, size):
+    '''
+    Find the specified size of a product from a Shopify site.
+    '''
+    # Go through each variant for the product
+    for variant in product["variants"]:
+        # Check if the size is found
+        
+        if(size == variant["title"]):
+            variant = str(variant["id"])
 
-    def downloadjson(self, page):
-        r = requests.get(self.url + f"products.json?limit=250")
-        # if r.status_code != 200:
-        #     print ("Bad Status Code: ", r.status_code)
-        if len((r.json())['products']) > 0:
-            data = r.json()['products']
-            return data 
-        else:
-            return
+            # Return the variant for the size
+            return variant
+        
+
+def generate_cart_link(session, variant):
+    '''
+    Generate the add to cart link for a Shopify site given a variant ID.
+    '''
+    # Create the link to add the product to cart
+    link = base_url + "/cart/" + variant + ":1"
+
+    # Return the link
+    return link
+
+
+# Loop until a product containing all the keywords is found
+while(product == None):
+    # Grab all the products on the site
+    products = get_products(session)
+    # Grab the product defined by keywords
+    product = keyword_search(session, products, keywords)
     
-    def parsejson(self, jsondata):
 
-        products =[]
+# Get the variant ID for the size
+variant = find_size(session, product, size)
 
-        for product in jsondata:
-            prod_id = product['id']
-            prod_title = product['title']
-            
-            for v in product['variants']:
-                item = {
-                    "id": prod_id,
-                    "title": prod_title,
-                    "sku": v['sku'],
-                    "price": v['price'],
-                    "available": v['available']
-                }
+# Get the cart link
+cart_link = generate_cart_link(session, variant)
 
-                print(item)
-
-            return
-        
-
-        
-        
-        
-        
-    
-SAGO = ShopifyScraper('https://sagostudio.co/')
-data = SAGO.downloadjson(3)
-SAGO.parsejson(data)
-     
-
-
-
-
-
-        
-        
-        
-        
-
-
-
-
-
+print (cart_link)
+# print (product)
