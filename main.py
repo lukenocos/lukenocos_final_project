@@ -12,7 +12,7 @@ to purchase a desired item through keywords.
 # https://www.youtube.com/watch?v=p3Z-qtUp4p8&ab_channel=JohnWatsonRooney
 # https://www.youtube.com/watch?v=-31Or1HSmyo&ab_channel=straight_code
 # https://www.youtube.com/watch?v=bLCx348H0Kw&ab_channel=YasCode
-
+# https://github.com/abocati/shopify-bot/blob/master/checkout-shopify.py
 
 
 import requests
@@ -103,21 +103,21 @@ def execute_page():
 
     driver.get(cart_link)
 
-    driver.find_element(By.ID, 'email').send_keys('myemailnocos@gmail.com')
+    driver.find_element(By.ID, 'email').send_keys(email)
     time.sleep(0.75)
-    driver.find_element(By.ID, 'TextField1').send_keys("John")
+    driver.find_element(By.ID, 'TextField1').send_keys(first_name)
     time.sleep(0.75)
-    driver.find_element(By.ID, 'TextField2').send_keys("Doe")
+    driver.find_element(By.ID, 'TextField2').send_keys(last_name)
     time.sleep(0.75)
-    driver.find_element(By.ID, 'address1').send_keys("123 West St")
+    driver.find_element(By.ID, 'address1').send_keys(address)
     time.sleep(0.75)
-    driver.find_element(By.ID, 'TextField4').send_keys("#124")
+    driver.find_element(By.ID, 'TextField4').send_keys(appt)
 
-    driver.find_element(By.ID, 'TextField5').send_keys("San Jose")
+    driver.find_element(By.ID, 'TextField5').send_keys(city)
 
-    driver.find_element(By.ID, 'TextField6').send_keys("95113")
+    driver.find_element(By.ID, 'TextField6').send_keys(zipcode)
 
-    driver.find_element(By.CLASS_NAME, 'submit').click()
+
 
 # Loop until a product containing all the keywords is found
 while(product == None):
@@ -133,7 +133,8 @@ variant = find_size(session, product, size)
 # Get the cart link
 cart_link = generate_cart_link(session, variant)
 
-print (cart_link)
+
+print ("found product link and adding to cart: " + cart_link)
 execute_page()
 # print (product)
 
