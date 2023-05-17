@@ -19,10 +19,15 @@ import requests
 import time
 import json
 import urllib3
-import webbrowser
 import codecs
 import random
 from settings import *
+import selenium
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service  
+from selenium.webdriver.common.by import By
+import time
 
 session = requests.session()
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -90,6 +95,29 @@ def generate_cart_link(session, variant):
     # Return the link
     return link
 
+def execute_page():
+    options = webdriver.ChromeOptions()
+    options.add_experimental_option("detach", True)
+
+    driver = webdriver.Chrome(options=options)
+
+    driver.get(cart_link)
+
+    driver.find_element(By.ID, 'email').send_keys('myemailnocos@gmail.com')
+    time.sleep(0.75)
+    driver.find_element(By.ID, 'TextField1').send_keys("John")
+    time.sleep(0.75)
+    driver.find_element(By.ID, 'TextField2').send_keys("Doe")
+    time.sleep(0.75)
+    driver.find_element(By.ID, 'address1').send_keys("123 West St")
+    time.sleep(0.75)
+    driver.find_element(By.ID, 'TextField4').send_keys("#124")
+
+    driver.find_element(By.ID, 'TextField5').send_keys("San Jose")
+
+    driver.find_element(By.ID, 'TextField6').send_keys("95113")
+
+    driver.find_element(By.CLASS_NAME, 'submit').click()
 
 # Loop until a product containing all the keywords is found
 while(product == None):
@@ -106,4 +134,7 @@ variant = find_size(session, product, size)
 cart_link = generate_cart_link(session, variant)
 
 print (cart_link)
+execute_page()
 # print (product)
+
+

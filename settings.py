@@ -1,9 +1,11 @@
 base_url = "https://sagostudio.co"
 
-keywords = ['Bandana', 'Mesh', 'Grey']
-size = "Medium"
+keywords = ['Sago', 'Shorts']
+size = "Small"
 
 random_size = True
 
 search_delay = 1
+
+
 
